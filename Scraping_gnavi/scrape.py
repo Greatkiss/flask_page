@@ -8,7 +8,6 @@ import shutil
 import time
 import os
 from Scraping_gnavi import csv_to_xlsx
-import zipfile
 
 e_list = []
 folder_path = "./Scraping_gnavi/results"

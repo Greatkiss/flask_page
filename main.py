@@ -5,6 +5,7 @@ from werkzeug.utils import secure_filename
 import shutil
 import zipfile
 from Scraping_gnavi import scrape
+from flask_sslify import SSLify
 
 # アップロード先のディレクトリ
 UPLOAD_FOLDER = './uploads'
@@ -12,6 +13,7 @@ TEMP_FOLDER = './temp'
 # アップロードされる拡張子の制限
 ALLOWED_EXTENSIONS = set(['xlsx', 'csv', 'pdf','zip'])
 app = Flask(__name__)
+sslify = SSLify(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def allwed_file(filename):
