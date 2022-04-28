@@ -1,5 +1,6 @@
+from calendar import week
 import os
-from flask import Flask, request, redirect, url_for, flash, render_template
+from flask import Flask, request, redirect, url_for, flash, render_template, send_file
 from werkzeug.utils import secure_filename
 import shutil
 import zipfile
@@ -72,17 +73,27 @@ def confirm_info():
     if request.method == 'POST':
         ipfilename = request.form['idpassfilename']
         n = request.form['data_num']
+        weekdate = request.form['weekdate']
         if ipfilename == '':
             flash('ファイルがありません')
             return redirect(request.url)
-        return redirect(url_for('run_da_scrape',num = n, excelname = ipfilename))
+        return redirect(url_for('run_da_scrape',num = n, excelname = ipfilename, weekdate = weekdate))
     return render_template("confirm.html", title="confirm", idpasslist = idpasslist)
 
-@app.route('/scrape/run/<excelname>/<num>')
-def run_da_scrape(num, excelname):
+@app.route('/scrape/run/<excelname>/<weekdate>/<num>')
+def run_da_scrape(num, excelname, weekdate):
     print("RUN DA SCRAPE with the {}".format(excelname))
-    scrape.main(int(num), "./uploads/{}".format(excelname))
-    return render_template("scraping.html", title="confirm")
+    scrape.main(int(num), "./uploads/{}".format(excelname), str(weekdate))
+    return redirect(url_for('dl_da_results'))
+
+@app.route('/scrape/download', methods=['GET','POST'])
+def dl_da_results():
+    if request.method == 'POST':
+        filepath = "./results.zip"
+        send_file(filepath, as_attachment = True, attachment_filename = os.path.basename(filepath))
+        #os.remove(filepath)
+        return redirect(url_for('home'))
+    return render_template("dl_zip.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

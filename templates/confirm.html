@@ -12,7 +12,8 @@
             <option value="{{ idpass }}">{{ idpass }}</option>
             {% endfor %}
         </select>
-        <input placeholder = 'スクレイピングする法人数', name="data_num", type="text">
+        <input placeholder = '法人数', name="data_num", type="text">
+        <input placeholder = 'どの週か（4_11）', name="weekdate", type="text">
         <input type = submit value = RUN>
     </form>
 {% endblock %}

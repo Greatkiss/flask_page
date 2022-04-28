@@ -5,9 +5,14 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import openpyxl as xl
 import shutil
-import os
 import time
+import os
+from Scraping_gnavi import csv_to_xlsx
+import zipfile
+
 e_list = []
+folder_path = "./Scraping_gnavi/results"
+
 class get_table():
     @staticmethod
     def golden(name, id, pwd, date):
@@ -65,7 +70,7 @@ class get_table():
                     selected_time_list.append(1)
             table['selection']= selected_time_list
 
-            table.to_csv("./Scraping_gnavi/results/{}_{}.csv".format(name, date), encoding='shift-jis')
+            table.to_csv(folder_path + "/{}_{}.csv".format(name, date), encoding='shift-jis')
             time.sleep(1)
             #logout
             logout_link = soup_table.select('#owner-headline > ul > li:nth-child(3) > a')[0].get('href')
@@ -74,12 +79,10 @@ class get_table():
             relogin_link = soup_out.select('#js-body > div.ol-container.ol-container--mat > div.ol-contents.ol-contents--fixed > div > p:nth-child(2) > a')[0].get('href')
             session.get(relogin_link)
             session.close()
-            return []
         except:
             print("error at {}".format(name))
             e_list.append([name, id, pwd])
             session.close()
-
     def get_idpwd(n, path):
         niplist = pd.DataFrame()
         for i in range(n):
@@ -93,15 +96,24 @@ class get_table():
         shutil.rmtree("uploads")
         return niplist
 
-def main(num, path):
+def main(num, path, weekdate):
     #IDとパスワードを"./idpass.xlsx"から取得し，pandas dataframeに格納
     niplist = get_table.get_idpwd(num,path) #get_idpwdの引数は読み込む法人数
     #niplistからidとpassを一行ずつ取得して，ログイン・スクレイプ・店舗ごとにcsvで保存
+    os.mkdir(folder_path)
     for i in range(len(niplist)):
         print("log in to {}".format(niplist.index[i]))
-        get_table.golden(niplist.index[i],niplist.iat[i,0], niplist.iat[i,1], "4_4-11")
+        get_table.golden(niplist.index[i],niplist.iat[i,0], niplist.iat[i,1], weekdate)
+    #生成したcsvを一つにまとめて保存し、ディレクトリ名を変更
+    csv_to_xlsx.excelize(folder_path)
+    new_path = "./Scraping_gnavi/results_{}".format(weekdate)
+    os.rename(folder_path, new_path)
+    #errorファイルの作成・保存
     pderror=pd.DataFrame(e_list)
-    pderror.to_csv("./error/errorlist.csv")
+    pderror.to_csv(new_path+"/errorlist.csv",encoding='shift-jis', index=False)
+    #results_{}フォルダのzip化
+    shutil.make_archive('results', 'zip', root_dir=new_path)
+    shutil.rmtree(new_path)
 
 if __name__ == "__main__":
     main(1,"./uploads/idpass.xlsx")
