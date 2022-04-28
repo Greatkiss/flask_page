@@ -1,11 +1,6 @@
 #owner page
 #https://owner.tabelog.com/
-#goji datuji check sheet
-#https://docs.google.com/spreadsheets/d/1ggv_fGNCfS9Q6lMibBt-zL3m2N5TV_77lHan7FYfzJI/edit#gid=0
-#id_pass sheet
-#https://docs.google.com/spreadsheets/d/1gUSv2MtiIqwqiZCmG9_KDlIteXClijAU/edit#gid=1552855832
-#golden time matome
-#https://docs.google.com/spreadsheets/d/1-DFEOhW2G5VbwlFXRGyHJuvadQ-ctuKJmlyi4Yh-EdI/edit#gid=1960689908
+
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
