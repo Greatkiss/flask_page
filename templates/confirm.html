@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1>
+        スクレイピングを実行する
+    </h1>
+    <p>
+        プルダウンメニューからスクレイピングに使用するリストを選択してください。
+    </p>
+    <form name="idpassfilename" method='post'>
+        <select name="idpassfilename">
+            {% for idpass in idpasslist %}
+            <option value="{{ idpass }}">{{ idpass }}</option>
+            {% endfor %}
+        </select>
+        <input type = submit value = RUN>
+    </form>
+{% endblock %}

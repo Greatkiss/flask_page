@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1>
+        idpass.xlsxファイルをアップロードする
+    </h1>
+    <form method = 'post' enctype = multipart/form-data>
+    <p>
+        <input type=file name = idpassfile>
+        <input type = submit value = Upload>
+    </p>
+    </form>
+{% endblock %}
