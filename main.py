@@ -2,6 +2,7 @@ import os
 from flask import Flask, request, redirect, url_for, flash, render_template
 from werkzeug.utils import secure_filename
 from flask import send_from_directory
+from Scraping_gnavi import scrape
 
 # 画像のアップロード先のディレクトリ
 UPLOAD_FOLDER = './uploads'
@@ -49,15 +50,17 @@ def confirm_info():
     idpasslist = files
     if request.method == 'POST':
         ipfilename = request.form['idpassfilename']
+        n = request.form['data_num']
         if ipfilename == '':
             flash('ファイルがありません')
             return redirect(request.url)
-        return redirect(url_for('run_da_scrape', excelname = ipfilename))
+        return redirect(url_for('run_da_scrape',num = n, excelname = ipfilename))
     return render_template("confirm.html", title="confirm", idpasslist = idpasslist)
 
-@app.route('/run/<excelname>')
-def run_da_scrape(excelname):
+@app.route('/run/<excelname>/<num>')
+def run_da_scrape(num, excelname):
     print("RUN DA SCRAPE with the {}".format(excelname))
+    scrape.main(int(num), "./uploads/{}".format(excelname))
     return render_template("scraping.html", title="confirm")
 
 if __name__ == "__main__":
