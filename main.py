@@ -1,6 +1,6 @@
 from calendar import week
 import os
-from flask import Flask, request, redirect, url_for, flash, render_template, send_file
+from flask import Flask, request, redirect, url_for, flash, render_template, Response, make_response
 from werkzeug.utils import secure_filename
 import shutil
 import zipfile
@@ -28,6 +28,8 @@ def home():
         action = request.form["what_to_do"]
         if action == "scraping":
             return redirect(url_for('uploads_files'))
+        if action == "gnavi_photo":
+            return redirect(url_for('gnavi_photo'))
     return render_template("homepage.html", title="home", work_list = work_list)
 
 @app.route('/scrape', methods=['GET', 'POST'])
@@ -84,18 +86,21 @@ def confirm_info():
 
 @app.route('/scrape/run/<excelname>/<weekdate>/<num>')
 def run_da_scrape(num, excelname, weekdate):
+    try:
+        os.remove("results.zip")
+    except:
+        print("there is no results.zip")
     print("RUN DA SCRAPE with the {}".format(excelname))
     scrape.main(int(num), "./uploads/{}".format(excelname), str(weekdate))
     return redirect(url_for('dl_da_results'))
 
 @app.route('/scrape/download', methods=['GET','POST'])
 def dl_da_results():
-    if request.method == 'POST':
-        filepath = "./results.zip"
-        send_file(filepath, as_attachment = True, attachment_filename = os.path.basename(filepath))
-        #os.remove(filepath)
-        return redirect(url_for('home'))
-    return render_template("dl_zip.html")
+    response = make_response()
+    response.data  = open('results.zip', "rb").read()
+    response.headers['Content-Type'] = 'application/octet-stream'
+    response.headers['Content-Disposition'] = 'attachment; filename=results.zip'
+    return response
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host = '0.0.0.0', port = '5000')

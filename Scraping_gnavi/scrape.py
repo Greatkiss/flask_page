@@ -109,7 +109,7 @@ def main(num, path, weekdate):
     os.rename(folder_path, new_path)
     #errorファイルの作成・保存
     pderror=pd.DataFrame(e_list)
-    pderror.to_csv(new_path+"/errorlist.csv",encoding='shift-jis', index=False)
+    pderror.to_csv(new_path+"/errorlist_.csv",encoding='shift-jis', index=False)
     #results_{}フォルダのzip化
     shutil.make_archive('results', 'zip', root_dir=new_path)
     shutil.rmtree(new_path)
