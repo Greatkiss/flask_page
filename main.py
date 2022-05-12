@@ -88,12 +88,12 @@ def confirm_info(action):
     idpasslist = files
     if request.method == 'POST':
         ipfilename = request.form['idpassfilename']
-        n = request.form['data_num']
-        weekdate = request.form['weekdate']
         if ipfilename == '':
             print('no file')
             return redirect(request.url)
         if action == 'golden time':
+            n = request.form['data_num']
+            weekdate = request.form['weekdate']
             return redirect(url_for('run_da_scrape_golden',num = n, excelname = ipfilename, weekdate = weekdate))
         elif action == 'tabelog visitor':
             return redirect(url_for('run_da_scrape_visitor',excelname = ipfilename))
