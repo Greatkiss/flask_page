@@ -1,11 +1,13 @@
 <!doctype html>
 <html>
 <head>
-<title>{{ title }}</title>
+    <meta charset = "utf-8">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" type ="text/css" href="{{ url_for('static', filename='index.css') }}"/>
 </head>
 <body>
-{% block content %}
-<!-- ここにメインコンテンツを書く -->
-{% endblock %}
+    {% block content %}
+    <!-- ここにメインコンテンツを書く -->
+    {% endblock %}
 </body>
 </html>
